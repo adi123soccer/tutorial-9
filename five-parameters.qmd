@@ -13,3 +13,7 @@ library(tidyverse)
 library(primer.data)
 ```
 
+```{r}
+The data we have shows how long an elected official will live after they won and their gender. We are trying to answer the causal effect between males and females
+```
+
