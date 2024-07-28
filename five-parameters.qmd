@@ -14,6 +14,6 @@ library(primer.data)
 ```
 
 ```{r}
-The data we have shows how long an elected official will live after they won and their gender. We are trying to answer the causal effect between males and females
+"The data we have shows how long an elected official will live after they won and their gender. We are trying to answer the causal effect between males and females. There is concern that longevity for gubernatorial candidates will differ significantly from that for candidates in Senate and other state-wide elections."
 ```
 
