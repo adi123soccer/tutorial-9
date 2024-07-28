@@ -11,9 +11,51 @@ execute:
 #| message: false
 library(tidyverse)
 library(primer.data)
+library(brms)
+library(tidybayes)
+library(gtsummary)
 ```
 
 ```{r}
-"The data we have shows how long an elected official will live after they won and their gender. We are trying to answer the causal effect between males and females. There is concern that longevity for gubernatorial candidates will differ significantly from that for candidates in Senate and other state-wide elections."
+#| label: model
+#| cache: true
+df1 <- governors |>
+select(last_name, year, state, sex, lived_after, election_age)
+
+
+fit_all <- brm(data = df1, formula = lived_after ~ sex * election_age, silent = 2, refresh = 0, seed = 13)
 ```
+
+```{r}
+#| label: plot
+ndata <- tibble(sex = c("Male", "Female"), 
+       election_age = 50)
+fit_all |>
+add_epred_draws(newdata = ndata) |>
+ggplot(aes(.epred, fill = sex)) +
+geom_histogram(aes(y = after_stat(count/sum(count)),
+alpha = 0.5, bins = 100, position = "identity")) +
+scale_x_continuous(labels = scales::number_format(accuracy = 1)) +
+scale_y_continuous(labels = scales::percent_format(accuracy = 1)) +
+labs(title = "Posterior for Expected Years Lived Post-Election",
+subtitle = "Male Candidates live longer",
+x = "Years",
+y = "Probability",
+fill = "sex")
+```
+
+```{r}
+"The data we have shows how long an elected official will live after they won and their gender. We are trying to answer the causal effect between males and females. There is concern that longevity for gubernatorial candidates will differ significantly from that for candidates in Senate and other state-wide elections. We are using a Bayesian regression model with the formula lived_after ~ sex * election_age. The interaction between sex and election age has a positive direction, suggesting that as election age increases, the life expectancy difference between male and female governors tends to widen. Males are expected to live 53 years longer but the standard error is from 9 to 93 years. So they are expected to live longer. "
+```
+
+$$ lived\_after_i =  \beta_0 + \beta_1 male_i + \beta_2 c\_election\_age_i + 
+\\ \beta_3 male_i *  c\_election\_age_i + \epsilon_i $$
+
+
+
+```{r}
+tbl_regression(fit_all, intercept = TRUE)
+```
+
+
 
