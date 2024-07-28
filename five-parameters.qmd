@@ -1,0 +1,15 @@
+---
+title: "five-parameters"
+author: "Aditya Narayan"
+format: html
+execute: 
+  echo: false
+---
+
+```{r}
+#| label: setup
+#| message: false
+library(tidyverse)
+library(primer.data)
+```
+
